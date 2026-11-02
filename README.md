@@ -113,6 +113,16 @@ exact source snippet so you can verify them against the filing.
 - `GET /api/leaderboard[?tickers=...]` — growers / shrinkers / biggest.
 
 SEC requires a `User-Agent` header — set server-side in `lib/sec.ts`.
+SEC blocks UAs containing URLs, so the default contact is email-shaped
+(`contact@tickerlens.local`). For sustained/heavy use, set your real email:
+
+```powershell
+# local dev
+$env:SEC_CONTACT_EMAIL="you@example.com"
+
+# docker
+docker run -d --name tickerlens -p 3200:3000 -e SEC_CONTACT_EMAIL=you@example.com tickerlens
+```
 All state beyond SEC data stays in the browser; no DB, no telemetry.
 
 ## License

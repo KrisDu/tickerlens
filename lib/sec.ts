@@ -27,7 +27,10 @@ export interface Person {
   custom?: boolean;
 }
 
-const SEC_UA = "TickerLens/1.0 (+https://github.com/KrisDu/tickerlens)";
+// SEC rejects User-Agents containing URLs ("undeclared automated tool").
+// Use an email-style contact; override with your real email for heavy use.
+const SEC_CONTACT = process.env.SEC_CONTACT_EMAIL?.trim() || "contact@tickerlens.local";
+const SEC_UA = `TickerLens/1.0 (${SEC_CONTACT})`;
 
 export function padCik(cik: number | string): string {
   return String(cik).padStart(10, "0");
