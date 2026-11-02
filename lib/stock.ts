@@ -118,6 +118,43 @@ export async function fetchQuote(ticker: string): Promise<Quote> {
   throw new Error(`No quote for ${ticker} (${String(lastErr)})`);
 }
 
+export interface Split {
+  date: string; // YYYY-MM-DD
+  factor: number; // multiply pre-split per-share values by this
+}
+
+// Split history from Yahoo chart events (for split-adjusting XBRL per-share series).
+export async function fetchSplits(ticker: string): Promise<Split[]> {
+  const sym = encodeURIComponent(ticker.toUpperCase().replace("/", "-"));
+  for (const host of ["query2.finance.yahoo.com", "query1.finance.yahoo.com"]) {
+    try {
+      const url = `https://${host}/v8/finance/chart/${sym}?range=max&interval=1mo&events=split`;
+      const res = await fetch(url, {
+        headers: { "User-Agent": BROWSER_UA, Accept: "application/json" },
+        next: { revalidate: 2592000 }, // 30d — splits are rare
+      });
+      if (!res.ok) continue;
+      const j = await res.json();
+      const ev = j?.chart?.result?.[0]?.events?.splits ?? {};
+      const out: Split[] = [];
+      for (const [ts, s] of Object.entries(ev) as Array<[string, { numerator?: number; denominator?: number }]>) {
+        const num = Number(s?.numerator);
+        const den = Number(s?.denominator);
+        if (!num || !den || num <= 0 || den <= 0 || num === den) continue;
+        const d = new Date(Number(ts) * 1000);
+        out.push({
+          date: `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`,
+          factor: den / num,
+        });
+      }
+      return out.sort((a, b) => (a.date < b.date ? -1 : 1));
+    } catch {
+      // try next host
+    }
+  }
+  return [];
+}
+
 export function yearEndCloses(monthly: PricePoint[]): Array<{ year: number; close: number }> {
   const byYear = new Map<number, PricePoint>();
   for (const p of monthly) {

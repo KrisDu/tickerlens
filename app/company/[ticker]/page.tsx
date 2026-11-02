@@ -10,6 +10,9 @@ import ExportButtons from "@/components/ExportButtons";
 import OfficersTable from "@/components/OfficersTable";
 import WatchlistButton from "@/components/WatchlistButton";
 import StockQuote from "@/components/StockQuote";
+import FinancialsCard from "@/components/FinancialsCard";
+import ValuationCard from "@/components/ValuationCard";
+import SentimentCard from "@/components/SentimentCard";
 import type { HeadcountPoint, Person } from "@/lib/sec";
 
 interface Info {
@@ -168,6 +171,12 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               </table>
             </div>
           )}
+          {activeCik && (
+            <div className="card">
+              <h2>Financials — the Buffett &amp; Graham view</h2>
+              <FinancialsCard cik={activeCik} ticker={ticker} />
+            </div>
+          )}
         </div>
         <div style={{ display: "grid", gap: 14, alignContent: "start" }}>
           <div className="card">
@@ -196,6 +205,18 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
           <div className="card">
             <h3>Latest news</h3>
             <NewsFeed ticker={ticker} name={info?.name ?? fallbackName} />
+          </div>
+          <div className="card">
+            <h3>Valuation &amp; margin of safety</h3>
+            {activeCik ? (
+              <ValuationCard cik={activeCik} ticker={ticker} />
+            ) : (
+              <div className="muted">Resolving CIK…</div>
+            )}
+          </div>
+          <div className="card">
+            <h3>Headline sentiment</h3>
+            <SentimentCard ticker={ticker} name={info?.name ?? fallbackName} />
           </div>
           <div className="card">
             <h3>Headcount × stock price</h3>

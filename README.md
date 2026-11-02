@@ -28,7 +28,9 @@ docker run -d --name tickerlens -p 3200:3000 tickerlens
   `company_tickers.json`, with header search (ticker / name / CIK) on every page,
   sort, pagination, a 4-slot compare tray, and ☆ watch buttons.
 - **Company (`/company/[ticker]`)** — live price badge (auto-refreshes), headcount
-  chart + table with per-year provenance and YoY %, company facts, latest-news
+  chart + table with per-year provenance and YoY %, **Buffett & Graham financials**
+  (10y revenue/EPS/ROE/FCF/dividends + valuation checklist: P/E, P/B, Graham Number,
+  net-net rule), **headline sentiment gauge**, company facts, latest-news
   feed (Google News RSS, ~15 min refresh), headcount × stock overlay, CEO/CFO
   tenure from SEC signatures, key-people timeline, CSV/PNG export.
 - **People** — curated founders/CEOs/execs for ~30 mega-caps (`data/leaders.ts`)
@@ -107,6 +109,9 @@ exact source snippet so you can verify them against the filing.
 - `GET /api/company/[cik]/info` — submissions facts (name, tickers, SIC, filings).
 - `GET /api/company/[cik]/officers` — CEO/CFO per year from SIGNATURES blocks.
 - `GET /api/quote/[ticker]` — live quote via Finnhub → Twelve Data → Yahoo chain.
+- `GET /api/company/[cik]/financials` — annual revenue, earnings, EPS, book value,
+  ROE, cash flow, dividends from XBRL + value stats (CAGR, streaks).
+- `GET /api/sentiment/[ticker]?name=...` — lexicon-scored headlines with gauge.
 - `GET /api/stock/[ticker]` — monthly closes (Yahoo) + year-end series.
 - `GET /api/people/[ticker]` — curated key people.
 - `GET /api/news/[ticker]?name=...` — latest headlines (Google News RSS).
