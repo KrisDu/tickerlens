@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CompanyEntry } from "@/lib/sec";
 import WatchlistButton from "@/components/WatchlistButton";
+import CompanyLogo from "@/components/CompanyLogo";
 
 const PAGE_SIZE = 50;
 
@@ -115,7 +116,12 @@ export default function Explorer() {
               {slice.map((c) => (
                 <tr key={c.ticker + c.cik}>
                   <td><span className="ticker">{c.ticker}</span></td>
-                  <td>{c.name}</td>
+                  <td>
+                    <span style={{ display: "inline-flex", gap: 10, alignItems: "center" }}>
+                      <CompanyLogo ticker={c.ticker} name={c.name} size={28} />
+                      {c.name}
+                    </span>
+                  </td>
                   <td className="muted">{c.cik}</td>
                   <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                     <a href={`/company/${c.ticker}?cik=${c.cik}&name=${encodeURIComponent(c.name)}`}>

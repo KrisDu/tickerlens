@@ -11,6 +11,7 @@ import OfficersTable from "@/components/OfficersTable";
 import WatchlistButton from "@/components/WatchlistButton";
 import StockQuote from "@/components/StockQuote";
 import AboutBlurb from "@/components/AboutBlurb";
+import CompanyLogo from "@/components/CompanyLogo";
 import FinancialsCard from "@/components/FinancialsCard";
 import ValuationCard from "@/components/ValuationCard";
 import SentimentCard from "@/components/SentimentCard";
@@ -100,8 +101,11 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
     <div>
       <section className="hero" id="top">
         <div className="eyebrow">{activeCik ? `CIK ${activeCik}` : "resolving…"} · <a href="/">all companies</a></div>
-        <h1>
-          <span className="ticker" style={{ fontSize: "0.62em", verticalAlign: "middle" }}>{ticker}</span> {info?.name ?? fallbackName}
+        <h1 style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          <CompanyLogo ticker={ticker} name={info?.name ?? fallbackName} size={46} />
+          <span>
+            <span className="ticker" style={{ fontSize: "0.42em", verticalAlign: "middle", marginRight: 10 }}>{ticker}</span> {info?.name ?? fallbackName}
+          </span>
         </h1>
         <AboutBlurb
           ticker={ticker}

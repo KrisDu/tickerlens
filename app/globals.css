@@ -151,6 +151,13 @@ table.grid tr:hover td { background: rgba(74, 222, 128, 0.05); }
   color: var(--accent); padding: 2px 8px; border-radius: 7px; display: inline-block;
   font-family: var(--font-mono, ui-monospace, monospace); font-size: 12.5px; letter-spacing: 0.03em;
 }
+.logo { background: #fff; object-fit: contain; padding: 2px; flex-shrink: 0; display: inline-block; vertical-align: middle; }
+.logo-fallback {
+  display: inline-grid; place-items: center; flex-shrink: 0; vertical-align: middle;
+  font-family: var(--font-mono, ui-monospace, monospace); font-weight: 800;
+  color: var(--accent); background: linear-gradient(135deg, #16202e, #1e2a3d);
+  border: 1px solid var(--line);
+}
 .pager { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 12px; color: var(--muted); font-size: 13px; font-family: var(--font-mono, ui-monospace, monospace); }
 
 /* ——— Cards ——— */
