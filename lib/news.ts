@@ -17,15 +17,8 @@ function clean(s: string): string {
 }
 
 // Shared Google News RSS fetch (keyless). Title format is "Headline - Publisher".
-export async function fetchGoogleNewsItems(
-  ticker: string,
-  name: string,
-  count = 8
-): Promise<NewsItem[]> {
-  const query = encodeURIComponent(
-    name ? `${ticker} ${name} stock` : `${ticker} stock market`
-  );
-  const url = `https://news.google.com/rss/search?q=${query}&hl=en-US&gl=US&ceid=US:en`;
+async function fetchRss(query: string, count: number): Promise<NewsItem[]> {
+  const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
   const res = await fetch(url, {
     headers: {
       "User-Agent":
@@ -52,4 +45,17 @@ export async function fetchGoogleNewsItems(
     if (title && link) items.push({ title, publisher, link, publishedAt: pub });
   }
   return items;
+}
+
+export function fetchGoogleNewsItems(
+  ticker: string,
+  name: string,
+  count = 8
+): Promise<NewsItem[]> {
+  return fetchRss(name ? `${ticker} ${name} stock` : `${ticker} stock market`, count);
+}
+
+// Broad market headlines for the global news tape.
+export function fetchMarketNews(count = 14): Promise<NewsItem[]> {
+  return fetchRss("stock market Wall Street S&P Nasdaq Dow", count);
 }

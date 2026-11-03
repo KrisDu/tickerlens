@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import TickerSearch from "@/components/TickerSearch";
 import TickerTape from "@/components/TickerTape";
+import NewsTape from "@/components/NewsTape";
 
 export const metadata: Metadata = {
   title: "TickerLens — Every Public Company, Every Headcount",
@@ -50,6 +51,7 @@ export default function RootLayout({
           </nav>
           <TickerSearch />
         </header>
+        <NewsTape />
         <TickerTape />
         <main className="wrap">{children}</main>
         <footer className="footer">

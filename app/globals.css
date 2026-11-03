@@ -73,8 +73,20 @@ a:hover { text-decoration: underline; }
 /* ——— Ticker tape ——— */
 .tape { border-bottom: 1px solid var(--line-soft); background: rgba(0, 0, 0, 0.4); overflow: hidden; white-space: nowrap; }
 .tape-track { display: inline-flex; gap: 34px; width: max-content; padding: 7px 0; animation: tape 55s linear infinite; will-change: transform; }
+.tape-track-slow { animation-duration: 90s; gap: 44px; }
 .tape:hover .tape-track { animation-play-state: paused; }
 @keyframes tape { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+/* ——— News tape (above the price tape) ——— */
+.newstape { display: flex; align-items: stretch; border-bottom: 1px solid var(--line-soft); background: rgba(0, 0, 0, 0.45); overflow: hidden; }
+.newstape-label {
+  display: grid; place-items: center; padding: 0 12px; flex-shrink: 0;
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; font-weight: 800; letter-spacing: 0.14em;
+  color: #04120b; background: var(--warn);
+}
+.newstape .tape { border-bottom: 0; background: transparent; flex: 1; min-width: 0; }
+.news-item { color: var(--text); }
+.news-item:hover { color: var(--accent); text-decoration: none; }
+.news-item .muted { font-size: 11px; }
 .tape-item { font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; display: inline-flex; gap: 7px; align-items: baseline; }
 .tape-item b { color: var(--text); }
 .up { color: var(--good); }
