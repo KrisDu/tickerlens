@@ -10,6 +10,7 @@ import ExportButtons from "@/components/ExportButtons";
 import OfficersTable from "@/components/OfficersTable";
 import WatchlistButton from "@/components/WatchlistButton";
 import StockQuote from "@/components/StockQuote";
+import AboutBlurb from "@/components/AboutBlurb";
 import FinancialsCard from "@/components/FinancialsCard";
 import ValuationCard from "@/components/ValuationCard";
 import SentimentCard from "@/components/SentimentCard";
@@ -102,11 +103,12 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
         <h1>
           <span className="ticker" style={{ fontSize: "0.62em", verticalAlign: "middle" }}>{ticker}</span> {info?.name ?? fallbackName}
         </h1>
-        <p>
-          Past &amp; present employee headcount from live SEC EDGAR filings, key people
-          (founders, CEOs, execs) with tenure bars, and the latest headlines.
-          Headcount merges XBRL facts with parsed 10-K / 20-F Human Capital text.
-        </p>
+        <AboutBlurb
+          ticker={ticker}
+          name={info?.name ?? fallbackName}
+          sic={info?.sicDescription}
+          exchange={info?.exchanges?.[0]}
+        />
         <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
           <StockQuote ticker={ticker} />
           {activeCik && (
