@@ -73,7 +73,7 @@ a:hover { text-decoration: underline; }
 /* ——— Ticker tape ——— */
 .tape { border-bottom: 1px solid var(--line-soft); background: rgba(0, 0, 0, 0.4); overflow: hidden; white-space: nowrap; }
 .tape-track { display: inline-flex; gap: 34px; width: max-content; padding: 7px 0; animation: tape 55s linear infinite; will-change: transform; }
-.tape-track-slow { animation-duration: 90s; gap: 44px; }
+.tape-track-slow { animation-duration: 170s; gap: 44px; }
 .tape:hover .tape-track { animation-play-state: paused; }
 @keyframes tape { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 /* ——— News tape (above the price tape) ——— */
