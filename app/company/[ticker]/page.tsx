@@ -97,12 +97,10 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
 
   return (
     <div>
-      <p className="muted" style={{ fontSize: 13 }}>
-        <a href="/">← All companies</a> · CIK {activeCik || "resolving…"}
-      </p>
-      <section className="hero">
+      <section className="hero" id="top">
+        <div className="eyebrow">{activeCik ? `CIK ${activeCik}` : "resolving…"} · <a href="/">all companies</a></div>
         <h1>
-          <span className="ticker">{ticker}</span> {info?.name ?? fallbackName}
+          <span className="ticker" style={{ fontSize: "0.62em", verticalAlign: "middle" }}>{ticker}</span> {info?.name ?? fallbackName}
         </h1>
         <p>
           Past &amp; present employee headcount from live SEC EDGAR filings, key people
@@ -120,8 +118,24 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
         </div>
       </section>
 
+      <nav className="pagenav" aria-label="Sections">
+        <a href="#headcount">Headcount</a>
+        <a href="#financials">Financials</a>
+        <a href="#buybacks">Buybacks</a>
+        <a href="#valuation">Valuation</a>
+        <a href="#scores">F/Z-Score</a>
+        <a href="#sentiment">Sentiment</a>
+        <a href="#news">News</a>
+        <a href="#insiders">Insiders</a>
+        <a href="#eightk">8-K</a>
+        <a href="#riskdiff">10-K diff</a>
+        <a href="#overlay">Stock</a>
+        <a href="#officers">Officers</a>
+        <a href="#people">People</a>
+      </nav>
+
       <div className="cards">
-        <div className="card">
+        <div className="card" id="headcount">
           <h2>Headcount — past to present</h2>
           {!activeCik && <div className="loading">Resolving CIK…</div>}
           {activeCik && headcount === null && !err && <div className="loading">Fetching live SEC filings (up to ~2 min cold)…</div>}
@@ -177,13 +191,13 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
             </div>
           )}
           {activeCik && (
-            <div className="card">
+            <div className="card" id="financials">
               <h2>Financials — the Buffett &amp; Graham view</h2>
               <FinancialsCard cik={activeCik} ticker={ticker} />
             </div>
           )}
           {activeCik && (
-            <div className="card">
+            <div className="card" id="buybacks">
               <h2>Buybacks — shrinking the share count</h2>
               <BuybacksCard cik={activeCik} ticker={ticker} />
             </div>
@@ -213,11 +227,11 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Loading company facts…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="news">
             <h3>Latest news</h3>
             <NewsFeed ticker={ticker} name={info?.name ?? fallbackName} />
           </div>
-          <div className="card">
+          <div className="card" id="valuation">
             <h3>Valuation &amp; margin of safety</h3>
             {activeCik ? (
               <ValuationCard cik={activeCik} ticker={ticker} />
@@ -225,7 +239,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Resolving CIK…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="scores">
             <h3>F-Score &amp; Z-Score</h3>
             {activeCik ? (
               <ScoresCard cik={activeCik} ticker={ticker} />
@@ -233,7 +247,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Resolving CIK…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="insiders">
             <h3>Insider trading — Form 4</h3>
             {activeCik ? (
               <InsidersCard cik={activeCik} />
@@ -241,7 +255,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Resolving CIK…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="eightk">
             <h3>8-K radar — plain English</h3>
             {activeCik ? (
               <EightKFeed cik={activeCik} />
@@ -249,7 +263,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Resolving CIK…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="riskdiff">
             <h3>What changed in the 10-K</h3>
             {activeCik ? (
               <DiffCard cik={activeCik} />
@@ -257,11 +271,11 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Resolving CIK…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="sentiment">
             <h3>Headline sentiment</h3>
             <SentimentCard ticker={ticker} name={info?.name ?? fallbackName} />
           </div>
-          <div className="card">
+          <div className="card" id="overlay">
             <h3>Headcount × stock price</h3>
             {headcount && headcount.length > 0 ? (
               <StockOverlay ticker={ticker} points={headcount} />
@@ -269,7 +283,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Loads once headcount is available.</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="officers">
             <h3>CEO / CFO tenure — from SEC signatures</h3>
             {activeCik ? (
               <OfficersTable cik={activeCik} />
@@ -277,7 +291,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <div className="muted">Resolving CIK…</div>
             )}
           </div>
-          <div className="card">
+          <div className="card" id="people">
             <h3>Key people — past &amp; present</h3>
             <PeopleTimeline ticker={ticker} serverPeople={people} />
           </div>

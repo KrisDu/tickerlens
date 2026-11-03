@@ -63,13 +63,14 @@ export default function Explorer() {
   return (
     <div>
       <section className="hero">
+        <div className="eyebrow">Live SEC EDGAR terminal · {all.length ? all.length.toLocaleString() : "—"} companies</div>
         <h1>
           Every public company. <span>Every headcount. Past &amp; present.</span>
         </h1>
         <p>
-          Search {all.length ? all.length.toLocaleString() : "all"} SEC-registered companies.
-          Open any ticker for live headcount history from 10-K / 20-F XBRL filings plus a
-          past-vs-present key-people timeline. Pick up to 4 to compare.
+          Open any ticker for 25 years of headcount parsed from 10-K filings,
+          F-Scores, insider trades, 8-K radar, valuation checks and sentiment.
+          Pick up to 4 to compare, or ☆ watch for new filings.
         </p>
       </section>
 

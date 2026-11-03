@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import TickerSearch from "@/components/TickerSearch";
+import TickerTape from "@/components/TickerTape";
 
 export const metadata: Metadata = {
   title: "TickerLens — Every Public Company, Every Headcount",
@@ -8,13 +10,16 @@ export const metadata: Metadata = {
     "Search every US public company. Live headcount from SEC EDGAR filings, officer tenure, quotes, news, and leaderboards.",
 };
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body>
         <header className="topbar">
           <a className="brand" href="/">
@@ -45,6 +50,7 @@ export default function RootLayout({
           </nav>
           <TickerSearch />
         </header>
+        <TickerTape />
         <main className="wrap">{children}</main>
         <footer className="footer">
           Headcount from live SEC EDGAR filings (XBRL + parsed 10-K/20-F text).
