@@ -125,9 +125,9 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
       </section>
 
       <nav className="pagenav" aria-label="Sections">
-        <a href="#headcount">Headcount</a>
         <a href="#financials">Financials</a>
         <a href="#buybacks">Buybacks</a>
+        <a href="#headcount">Headcount</a>
         <a href="#valuation">Valuation</a>
         <a href="#scores">F/Z-Score</a>
         <a href="#sentiment">Sentiment</a>
@@ -141,7 +141,20 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
       </nav>
 
       <div className="cards">
-        <div className="card" id="headcount">
+        <div style={{ display: "grid", gap: 14, alignContent: "start" }}>
+          {activeCik && (
+            <div className="card" id="financials">
+              <h2>Financials — the Buffett &amp; Graham view</h2>
+              <FinancialsCard cik={activeCik} ticker={ticker} />
+            </div>
+          )}
+          {activeCik && (
+            <div className="card" id="buybacks">
+              <h2>Buybacks — shrinking the share count</h2>
+              <BuybacksCard cik={activeCik} ticker={ticker} />
+            </div>
+          )}
+          <div className="card" id="headcount">
           <h2>Headcount — past to present</h2>
           {!activeCik && <div className="loading">Resolving CIK…</div>}
           {activeCik && headcount === null && !err && <div className="loading">Fetching live SEC filings (up to ~2 min cold)…</div>}
@@ -196,18 +209,7 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               </table>
             </div>
           )}
-          {activeCik && (
-            <div className="card" id="financials">
-              <h2>Financials — the Buffett &amp; Graham view</h2>
-              <FinancialsCard cik={activeCik} ticker={ticker} />
-            </div>
-          )}
-          {activeCik && (
-            <div className="card" id="buybacks">
-              <h2>Buybacks — shrinking the share count</h2>
-              <BuybacksCard cik={activeCik} ticker={ticker} />
-            </div>
-          )}
+          </div>
         </div>
         <div style={{ display: "grid", gap: 14, alignContent: "start" }}>
           <div className="card">
