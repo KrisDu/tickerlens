@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { LEADERS } from "@/data/leaders";
 import { fetchHeadcountMerged, fetchTickersServer, type HeadcountPoint } from "@/lib/sec";
+import { fetchFinancials } from "@/lib/financials";
+import { fetchStockMonthly, yearEndCloses } from "@/lib/stock";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -14,6 +16,9 @@ interface Row {
   cagr5y: number | null;
   cagr10y: number | null;
   points: number;
+  revPerEmp: number | null;
+  profitPerEmp: number | null;
+  mcapPerEmp: number | null;
 }
 
 function cagr(points: HeadcountPoint[], years: number): number | null {
@@ -44,10 +49,22 @@ export async function GET(req: Request) {
         jobs.slice(i, i + CONC).map(async ({ ticker, entry }) => {
           if (!entry) return null;
           try {
-            const { points } = await fetchHeadcountMerged(entry.cik, 12);
+            const [{ points }, fin, stock] = await Promise.all([
+              fetchHeadcountMerged(entry.cik, 12),
+              fetchFinancials(entry.cik).catch(() => null),
+              fetchStockMonthly(ticker).catch(() => []),
+            ]);
             if (points.length < 2) return null;
             const last = points[points.length - 1];
             const prev = points[points.length - 2];
+            // Match headcount year to the same fiscal year in financials.
+            const fy = fin?.years.find((y) => y.year === last.year) ?? fin?.years[fin.years.length - 1];
+            const revPerEmp = fy?.revenue != null ? fy.revenue / last.employees : null;
+            const profitPerEmp = fy?.netIncome != null ? fy.netIncome / last.employees : null;
+            const closes = yearEndCloses(stock);
+            const px = closes.length ? closes[closes.length - 1].close : null;
+            const so = fy?.sharesOut ?? fy?.sharesDiluted ?? null;
+            const mcapPerEmp = px != null && so != null ? (px * so) / last.employees : null;
             const row: Row = {
               ticker,
               name: entry.name,
@@ -57,6 +74,9 @@ export async function GET(req: Request) {
               cagr5y: cagr(points, 5),
               cagr10y: cagr(points, 10),
               points: points.length,
+              revPerEmp,
+              profitPerEmp,
+              mcapPerEmp,
             };
             return row;
           } catch {
@@ -73,14 +93,28 @@ export async function GET(req: Request) {
       .filter((r) => r.yoyPct != null)
       .sort((a, b) => (a.yoyPct ?? 0) - (b.yoyPct ?? 0));
     const biggest = [...rows].sort((a, b) => (b.latest ?? 0) - (a.latest ?? 0));
+    const byRevenue = [...rows]
+      .filter((r) => r.revPerEmp != null)
+      .sort((a, b) => (b.revPerEmp ?? 0) - (a.revPerEmp ?? 0));
+    const byProfit = [...rows]
+      .filter((r) => r.profitPerEmp != null)
+      .sort((a, b) => (b.profitPerEmp ?? 0) - (a.profitPerEmp ?? 0));
+    const byMcap = [...rows]
+      .filter((r) => r.mcapPerEmp != null)
+      .sort((a, b) => (b.mcapPerEmp ?? 0) - (a.mcapPerEmp ?? 0));
     return NextResponse.json({
       count: rows.length,
       universe: universe.length,
       growers: growers.slice(0, 15),
       shrinkers: shrinkers.slice(0, 15),
       biggest: biggest.slice(0, 15),
+      perEmployee: {
+        revenue: byRevenue.slice(0, 15),
+        profit: byProfit.slice(0, 15),
+        mcap: byMcap.slice(0, 15),
+      },
     });
   } catch (e) {
-    return NextResponse.json({ error: String(e), growers: [], shrinkers: [], biggest: [] }, { status: 502 });
+    return NextResponse.json({ error: String(e), growers: [], shrinkers: [], biggest: [], perEmployee: null }, { status: 502 });
   }
 }

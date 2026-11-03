@@ -13,6 +13,11 @@ import StockQuote from "@/components/StockQuote";
 import FinancialsCard from "@/components/FinancialsCard";
 import ValuationCard from "@/components/ValuationCard";
 import SentimentCard from "@/components/SentimentCard";
+import BuybacksCard from "@/components/BuybacksCard";
+import ScoresCard from "@/components/ScoresCard";
+import EightKFeed from "@/components/EightKFeed";
+import InsidersCard from "@/components/InsidersCard";
+import DiffCard from "@/components/DiffCard";
 import type { HeadcountPoint, Person } from "@/lib/sec";
 
 interface Info {
@@ -177,6 +182,12 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
               <FinancialsCard cik={activeCik} ticker={ticker} />
             </div>
           )}
+          {activeCik && (
+            <div className="card">
+              <h2>Buybacks — shrinking the share count</h2>
+              <BuybacksCard cik={activeCik} ticker={ticker} />
+            </div>
+          )}
         </div>
         <div style={{ display: "grid", gap: 14, alignContent: "start" }}>
           <div className="card">
@@ -210,6 +221,38 @@ export default function CompanyPage({ params }: { params: { ticker: string } }) 
             <h3>Valuation &amp; margin of safety</h3>
             {activeCik ? (
               <ValuationCard cik={activeCik} ticker={ticker} />
+            ) : (
+              <div className="muted">Resolving CIK…</div>
+            )}
+          </div>
+          <div className="card">
+            <h3>F-Score &amp; Z-Score</h3>
+            {activeCik ? (
+              <ScoresCard cik={activeCik} ticker={ticker} />
+            ) : (
+              <div className="muted">Resolving CIK…</div>
+            )}
+          </div>
+          <div className="card">
+            <h3>Insider trading — Form 4</h3>
+            {activeCik ? (
+              <InsidersCard cik={activeCik} />
+            ) : (
+              <div className="muted">Resolving CIK…</div>
+            )}
+          </div>
+          <div className="card">
+            <h3>8-K radar — plain English</h3>
+            {activeCik ? (
+              <EightKFeed cik={activeCik} />
+            ) : (
+              <div className="muted">Resolving CIK…</div>
+            )}
+          </div>
+          <div className="card">
+            <h3>What changed in the 10-K</h3>
+            {activeCik ? (
+              <DiffCard cik={activeCik} />
             ) : (
               <div className="muted">Resolving CIK…</div>
             )}

@@ -30,14 +30,25 @@ docker run -d --name tickerlens -p 3200:3000 tickerlens
 - **Company (`/company/[ticker]`)** — live price badge (auto-refreshes), headcount
   chart + table with per-year provenance and YoY %, **Buffett & Graham financials**
   (10y revenue/EPS/ROE/FCF/dividends + valuation checklist: P/E, P/B, Graham Number,
-  net-net rule), **headline sentiment gauge**, company facts, latest-news
+  net-net rule), **buyback tracker**, **F-Score/Z-Score**, **insider trades**,
+  **8-K radar**, **10-K what-changed diff**, **headline sentiment gauge**, company facts, latest-news
   feed (Google News RSS, ~15 min refresh), headcount × stock overlay, CEO/CFO
   tenure from SEC signatures, key-people timeline, CSV/PNG export.
 - **People** — curated founders/CEOs/execs for ~30 mega-caps (`data/leaders.ts`)
   with `present` / `past` pills, tenure bars, search + filter.
 - **Leaderboards (`/leaderboard`)** — fastest growers (5y CAGR), biggest
-  shrinkers (worst YoY, possible layoffs), largest employers, computed live
-  across the covered universe.
+  shrinkers (worst YoY, possible layoffs), largest employers, plus the
+  **per-employee league**: revenue, profit, and market cap per head —
+  computed live across the covered universe.
+- **Buyback tracker** — share-count history, buyback dollars per year, and
+  total share-count reduction from XBRL.
+- **F-Score & Z-Score** — Piotroski 9-point checklist + Altman distress score
+  from XBRL, computed live per company.
+- **8-K radar** — recent 8-Ks with item codes translated to plain English.
+- **Insider trading** — open-market buys/sells parsed from Form 4 XML, with
+  net buy/sell totals per insider.
+- **10-K what-changed** — Risk Factors sentence-level diff between the last
+  two annual filings (new vs removed).
 - **Watchlist (`/watchlist`)** — star any company; the app checks each watched
   CIK's latest SEC filing and flags NEW filings from the last 60 days.
   Stored in your browser.
@@ -109,6 +120,10 @@ exact source snippet so you can verify them against the filing.
 - `GET /api/company/[cik]/info` — submissions facts (name, tickers, SIC, filings).
 - `GET /api/company/[cik]/officers` — CEO/CFO per year from SIGNATURES blocks.
 - `GET /api/quote/[ticker]` — live quote via Finnhub → Twelve Data → Yahoo chain.
+- `GET /api/company/[cik]/scores[?price=]` — Piotroski F-Score + Altman Z-Score detail.
+- `GET /api/company/[cik]/eightks` — recent 8-Ks with plain-English item codes.
+- `GET /api/company/[cik]/insiders` — Form 4 open-market buys/sells + net totals.
+- `GET /api/company/[cik]/riskdiff` — Risk Factors added/removed vs prior 10-K.
 - `GET /api/company/[cik]/financials` — annual revenue, earnings, EPS, book value,
   ROE, cash flow, dividends from XBRL + value stats (CAGR, streaks).
 - `GET /api/sentiment/[ticker]?name=...` — lexicon-scored headlines with gauge.

@@ -182,7 +182,7 @@ export async function fetchCompanyInfoServer(cik: string) {
 // discloses it in prose ("employed approximately 164,000..."). We fetch the
 // main filing document from the EDGAR archive and extract it with patterns.
 
-interface AnnualFiling {
+export interface AnnualFiling {
   form: string;
   accession: string;
   filingDate: string;
@@ -190,7 +190,7 @@ interface AnnualFiling {
   fiscalYearEnd?: string;
 }
 
-async function fetchAnnualFilings(
+export async function fetchAnnualFilings(
   cik: string,
   maxYears = 25
 ): Promise<AnnualFiling[]> {
@@ -285,7 +285,7 @@ function looksLikeMoneyOrShares(snippet: string, numStart: number): boolean {
 // Item 1A heading ends the Item 1 Business section (home of the headcount
 // disclosure). Must skip Table-of-Contents entries like
 // "Item 1A. Risk Factors 5 Item 1B..." — those also match /item 1a/.
-function findItem1ACut(text: string): number {
+export function findItem1ACut(text: string): number {
   const rx = /item\s+1a[\s.\u00a0]+/gi;
   let m: RegExpExecArray | null;
   while ((m = rx.exec(text)) !== null) {
@@ -364,7 +364,7 @@ function searchZoneForHeadcount(
   return { employees: win.val, snippet };
 }
 
-function stripHtml(html: string): string {
+export function stripHtml(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
@@ -381,7 +381,7 @@ function stripHtml(html: string): string {
     .replace(/\s+/g, " ");
 }
 
-function inferFiscalYear(
+export function inferFiscalYear(
   coverText: string,
   filingDate: string,
   fiscalYearEnd?: string
@@ -405,7 +405,7 @@ function inferFiscalYear(
 const filingCache = new Map<string, { at: number; point: HeadcountPoint | null }>();
 const FILING_CACHE_TTL = 7 * 24 * 3600 * 1000;
 
-function sleep(ms: number): Promise<void> {
+export function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 

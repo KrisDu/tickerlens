@@ -17,13 +17,19 @@ export interface FinancialYear {
   eps: number | null;
   equity: number | null;
   sharesDiluted: number | null;
+  sharesOut: number | null;
   assetsCurrent: number | null;
   liabCurrent: number | null;
   liabilities: number | null;
   ltDebt: number | null;
+  assets: number | null;
+  grossProfit: number | null;
+  retainedEarnings: number | null;
+  ebit: number | null;
   ocf: number | null;
   capex: number | null;
   dividends: number | null;
+  buybacks: number | null;
   roe: number | null;
   fcf: number | null;
   bvps: number | null;
@@ -176,13 +182,20 @@ export async function fetchFinancials(cik: string): Promise<{
   const ocf = get("us-gaap", "NetCashProvidedByUsedInOperatingActivities");
   const capex = get("us-gaap", "PaymentsToAcquirePropertyPlantAndEquipment");
   const dividends = get("us-gaap", "PaymentsOfDividends", "PaymentsOfDividendsCommonStock");
+  const sharesOut = get("dei", "EntityCommonStockSharesOutstanding");
+  const buybacks = get("us-gaap", "PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfEquity");
+  const assets = get("us-gaap", "Assets");
+  const grossProfit = get("us-gaap", "GrossProfit");
+  const retainedEarnings = get("us-gaap", "RetainedEarningsAccumulatedDeficit");
+  const ebit = get("us-gaap", "OperatingIncomeLoss");
 
   const years = Array.from(
     new Set([
       ...revenue.keys(), ...netIncome.keys(), ...eps.keys(), ...equity.keys(),
-      ...shares.keys(), ...assetsCurrent.keys(), ...liabCurrent.keys(),
-      ...liabilities.keys(), ...ltDebt.keys(), ...ocf.keys(), ...capex.keys(),
-      ...dividends.keys(),
+      ...shares.keys(), ...sharesOut.keys(), ...assetsCurrent.keys(), ...liabCurrent.keys(),
+      ...liabilities.keys(), ...ltDebt.keys(), ...assets.keys(), ...grossProfit.keys(),
+      ...retainedEarnings.keys(), ...ebit.keys(), ...ocf.keys(), ...capex.keys(),
+      ...dividends.keys(), ...buybacks.keys(),
     ])
   ).sort((a, b) => a - b);
 
@@ -209,13 +222,19 @@ export async function fetchFinancials(cik: string): Promise<{
       eps: r2(epsRaw),
       equity: eq,
       sharesDiluted: sh,
+      sharesOut: pick(sharesOut, year),
       assetsCurrent: ac,
       liabCurrent: lc,
       liabilities: li,
       ltDebt: pick(ltDebt, year),
+      assets: pick(assets, year),
+      grossProfit: pick(grossProfit, year),
+      retainedEarnings: pick(retainedEarnings, year),
+      ebit: pick(ebit, year),
       ocf: oc,
       capex: cx != null ? Math.abs(cx) : null,
       dividends: dv != null ? Math.abs(dv) : null,
+      buybacks: (() => { const b = pick(buybacks, year); return b != null ? Math.abs(b) : null; })(),
       roe: roe != null ? Math.round(roe * 10000) / 100 : null,
       fcf,
       bvps: eq != null && sh != null && sh !== 0 ? r2(eq / sh) : null,
